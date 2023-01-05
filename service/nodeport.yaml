@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-service-test-node-port
+  labels:
+    app: back-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: back-pod
+  template:
+    metadata:
+      labels:
+        app: back-pod
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+          - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service-node-port
+  labels:
+    app: back-service
+spec:
+  type: NodePort
+  selector: # of the pod created
+    app: back-pod
+  ports:
+    - protocol: TCP
+      port: 8080 # service itself port
+      targetPort: 80 # container pod port
